@@ -1,0 +1,25 @@
+[package]
+name = "geekCaps"
+version = "0.1.0"
+edition = "2021"
+description = "A tool for keyboard customization and key remapping"
+authors = ["Le"]
+include = ["src/**/*", "README.md"]
+
+[dependencies]
+# Core functionality
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+anyhow = "1.0" # Error handling
+clap = { version = "4.4", features = [
+	"derive",
+] } # Command line argument parsing
+
+# UI 
+tuirealm = "2.1.0"
+ratatui = "0.29.0"   # Terminal UI framework
+crossterm = "0.28.1" # Terminal handling
+
+# Keyboard handling (Linux only)
+evdev = "0.13.0" # Linux input device handling
