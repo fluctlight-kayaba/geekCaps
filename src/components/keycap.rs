@@ -67,11 +67,30 @@ impl Keycap {
 		self.attr(Attribute::TextProps, AttrValue::TextModifiers(modifiers));
 		self
 	}
+
+	pub fn get_label(&self) -> String {
+		self.label.clone()
+	}
+	
+	pub fn get_display_label(&self) -> String {
+		// Strip width suffix if present (e.g., "cmd:8" -> "cmd")
+		if let Some(pos) = self.label.find(':') {
+			// For a space-only keycap (e.g., ":8"), return an empty string
+			if pos == 0 {
+				return String::new();
+			}
+			self.label[0..pos].to_string()
+		} else {
+			self.label.clone()
+		}
+	}
 }
 
 impl MockComponent for Keycap {
 	fn view(&mut self, frame: &mut Frame, area: Rect) {
-		let text = self.label.to_string();
+		// Use the display label (without width suffix) for rendering
+		let text = self.get_display_label();
+
 		let alignment = self
 			.props
 			.get_or(
@@ -81,7 +100,7 @@ impl MockComponent for Keycap {
 			.unwrap_alignment();
 		let foreground = self
 			.props
-			.get_or(Attribute::Foreground, AttrValue::Color(Color::Red))
+			.get_or(Attribute::Foreground, AttrValue::Color(Color::White))
 			.unwrap_color();
 		let background = self
 			.props
@@ -113,9 +132,13 @@ impl MockComponent for Keycap {
 			.get_or(Attribute::Focus, AttrValue::Flag(false))
 			.unwrap_flag();
 
+		// Create a block without title for the border only
+		let block = helper::get_block(borders, title, focus);
+
+		// Render the widget with the simple text from label
 		frame.render_widget(
 			Paragraph::new(text)
-				.block(helper::get_block(borders, title, focus))
+				.block(block)
 				.style(
 					Style::default()
 						.fg(foreground)

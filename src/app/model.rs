@@ -6,7 +6,7 @@ use tuirealm::terminal::{CrosstermTerminalAdapter, TerminalAdapter, TerminalBrid
 use tuirealm::{Application, AttrValue, Attribute, EventListenerCfg, Update};
 
 use super::{Id, Msg};
-use crate::components::{Keyboard, Keycap, SimpleCounter};
+use crate::components::Keyboard;
 
 pub struct Model<T>
 where
@@ -40,11 +40,10 @@ where
 				let chunks = Layout::default()
 					.direction(Direction::Vertical)
 					.margin(1)
-					.constraints([Constraint::Length(3), Constraint::Length(20)].as_ref())
+					.constraints([Constraint::Length(18)].as_ref())
 					.split(f.area());
 
-				self.app.view(&Id::SimpleCounter, f, chunks[0]);
-				self.app.view(&Id::Keyboard, f, chunks[1]);
+				self.app.view(&Id::Keyboard, f, chunks[0]);
 			})
 			.is_ok());
 	}
@@ -52,24 +51,16 @@ where
 	fn init_app() -> Application<Id, Msg, NoUserEvent> {
 		let mut app: Application<Id, Msg, NoUserEvent> = Application::init(
 			EventListenerCfg::default()
-				.crossterm_input_listener(Duration::from_millis(20), 3)
+				.crossterm_input_listener(Duration::from_millis(25), 3)
 				.poll_timeout(Duration::from_millis(10))
 				.tick_interval(Duration::from_secs(1)),
 		);
 
 		assert!(app
-			.mount(
-				Id::SimpleCounter,
-				Box::new(SimpleCounter::new(0)),
-				Vec::new(),
-			)
+			.mount(Id::Keyboard, Box::new(Keyboard::new()), Vec::new(),)
 			.is_ok());
 
-		assert!(app
-			.mount(Id::Keyboard, Box::new(Keyboard::new("QWERTY")), Vec::new(),)
-			.is_ok());
-
-		assert!(app.active(&Id::SimpleCounter).is_ok());
+		assert!(app.active(&Id::Keyboard).is_ok());
 		app
 	}
 }
@@ -80,6 +71,7 @@ where
 {
 	fn update(&mut self, msg: Option<Msg>) -> Option<Msg> {
 		if let Some(msg) = msg {
+			// Always set redraw flag to true when a message is received
 			self.redraw = true;
 
 			match msg {
@@ -96,6 +88,12 @@ where
 							AttrValue::String(format!("Counter: {}", v))
 						)
 						.is_ok());
+					None
+				}
+				Msg::KeyPressed(_key) => {
+					// We already updated the keycap in the keyboard component
+					// Force redraw when any key is pressed
+					self.redraw = true;
 					None
 				}
 			}

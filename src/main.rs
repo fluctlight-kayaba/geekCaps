@@ -11,6 +11,7 @@ use app::model::Model;
 pub enum Msg {
 	AppClose,
 	CounterChanged(isize),
+	KeyPressed(String),
 }
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
