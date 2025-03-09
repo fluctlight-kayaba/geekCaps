@@ -31,15 +31,15 @@ impl Keyboard {
 				"Esc", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "\\", "`",
 			],
 			vec![
-				"Tab:9", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "Bs:8",
+				"Tab:7", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "Bs:8",
 			],
 			vec![
-				"Caps:9", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "Enter:11",
+				"Caps:9", "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "Enter:11",
 			],
 			vec![
-				"Shift:11", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "Shift:9", "Fn",
+				"Shift:11", "Z", "X", "C", "V", "B", "N", "M", ",", ".", "/", "Shift:9", "Fn",
 			],
-			vec![":7", "Alt", "Cmd:9", "Space:35", "Cmd:9", "Alt"],
+			vec![":8", "Alt", "Cmd:9", "Space:27", "Cmd:9", "Alt"],
 		];
 
 		let mut keycaps = Vec::new();
@@ -89,10 +89,8 @@ impl Keyboard {
 	}
 
 	fn highlight_keycap(&mut self, label: &str) -> bool {
-		// First reset all keycaps to default border color, preserving other border properties
 		for row in self.keycaps.iter_mut() {
 			for keycap in row.iter_mut() {
-				// Get current borders with all properties
 				let mut borders = keycap
 					.query(Attribute::Borders)
 					.unwrap_or(AttrValue::Borders(
@@ -111,16 +109,13 @@ impl Keyboard {
 			}
 		}
 
-		// Skip highlighting if label is empty
 		if label.is_empty() {
 			return false;
 		}
 
-		// Then highlight the specific keycap
 		for row in self.keycaps.iter_mut() {
 			for keycap in row.iter_mut() {
 				if keycap.get_display_label().to_lowercase() == label.to_lowercase() {
-					// Get current borders with all properties
 					let mut borders = keycap
 						.query(Attribute::Borders)
 						.unwrap_or(AttrValue::Borders(
@@ -128,7 +123,6 @@ impl Keyboard {
 						))
 						.unwrap_borders();
 
-					// Only change the color property, preserving sides and modifiers (rounded corners)
 					borders = borders.color(Color::Yellow);
 					keycap.attr(Attribute::Borders, AttrValue::Borders(borders));
 
@@ -288,8 +282,8 @@ impl Component<Msg, NoUserEvent> for Keyboard {
 				let key_str = match key_event.code {
 					Key::Char(' ') => "space".to_string(),
 					Key::Char(ch) => ch.to_string(),
-					Key::Backspace => "B".to_string(),
-					Key::Enter => "E".to_string(),
+					Key::Backspace => "Bs".to_string(),
+					Key::Enter => "Enter".to_string(),
 					Key::Left => "←".to_string(),
 					Key::Right => "→".to_string(),
 					Key::Up => "↑".to_string(),
@@ -305,11 +299,11 @@ impl Component<Msg, NoUserEvent> for Keyboard {
 
 				// Then apply new highlights
 				if key_event.modifiers.contains(KeyModifiers::ALT) {
-					self.highlight_keycap("alt");
+					self.highlight_keycap("Alt");
 					modified = true;
 				}
 				if key_event.modifiers.contains(KeyModifiers::CONTROL) {
-					self.highlight_keycap("ctrl");
+					self.highlight_keycap("Caps");
 					modified = true;
 				}
 				if key_event.modifiers.contains(KeyModifiers::SHIFT) {

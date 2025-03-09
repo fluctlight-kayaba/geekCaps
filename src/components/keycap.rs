@@ -71,11 +71,9 @@ impl Keycap {
 	pub fn get_label(&self) -> String {
 		self.label.clone()
 	}
-	
+
 	pub fn get_display_label(&self) -> String {
-		// Strip width suffix if present (e.g., "cmd:8" -> "cmd")
 		if let Some(pos) = self.label.find(':') {
-			// For a space-only keycap (e.g., ":8"), return an empty string
 			if pos == 0 {
 				return String::new();
 			}
