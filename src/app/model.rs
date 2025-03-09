@@ -5,8 +5,8 @@ use tuirealm::ratatui::layout::{Constraint, Direction, Layout};
 use tuirealm::terminal::{CrosstermTerminalAdapter, TerminalAdapter, TerminalBridge};
 use tuirealm::{Application, AttrValue, Attribute, EventListenerCfg, Update};
 
-use super::components::SimpleCounter;
 use super::{Id, Msg};
+use crate::components::{Keyboard, Keycap, SimpleCounter};
 
 pub struct Model<T>
 where
@@ -40,9 +40,11 @@ where
 				let chunks = Layout::default()
 					.direction(Direction::Vertical)
 					.margin(1)
-					.constraints([Constraint::Length(3)].as_ref())
+					.constraints([Constraint::Length(3), Constraint::Length(20)].as_ref())
 					.split(f.area());
+
 				self.app.view(&Id::SimpleCounter, f, chunks[0]);
+				self.app.view(&Id::Keyboard, f, chunks[1]);
 			})
 			.is_ok());
 	}
@@ -59,8 +61,12 @@ where
 			.mount(
 				Id::SimpleCounter,
 				Box::new(SimpleCounter::new(0)),
-				Vec::new()
+				Vec::new(),
 			)
+			.is_ok());
+
+		assert!(app
+			.mount(Id::Keyboard, Box::new(Keyboard::new("QWERTY")), Vec::new(),)
 			.is_ok());
 
 		assert!(app.active(&Id::SimpleCounter).is_ok());

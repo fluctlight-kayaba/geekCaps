@@ -15,7 +15,9 @@ pub enum Msg {
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub enum Id {
+	Keycap,
 	SimpleCounter,
+	Keyboard,
 }
 
 fn main() {
