@@ -1,0 +1,19 @@
+# Sample geekCaps configuration
+
+name = "Developer Keyboard Layout"
+
+# Device to apply mappings to (optional)
+# device = "Device Name"
+
+# List of key mappings
+[[mappings]]
+original_key = "CapsLock"
+target_key = "Escape"
+
+[[mappings]]
+original_key = "Escape"
+target_key = "CapsLock"
+
+[[mappings]]
+original_key = "RightAlt"
+target_key = "F13"  # F13 can be used as a modifier in other applications
